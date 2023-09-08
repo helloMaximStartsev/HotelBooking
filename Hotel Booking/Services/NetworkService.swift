@@ -73,4 +73,45 @@ final class NetworkService {
         }.resume()
     }
     
+    func getImage(urlString: String, completion: @escaping (Result<UIImage, Error>) -> Void) {
+        guard let url = URL(string: urlString) else { return }
+        
+        URLSession.shared.dataTask(with: url) { (data, response, error) in
+            if let error = error {
+                completion(.failure(error))
+            } else {
+                guard let data = data,
+                      let image = UIImage(data: data) else { return }
+                
+                completion(.success(image))
+            }
+        }.resume()
+    }
+    
+    func getImages(urlStrings: [String], completion: @escaping ([UIImage]) -> Void) {
+        var images: [UIImage] = []
+        
+        let dispatchGroup = DispatchGroup()
+        for urlString in urlStrings {
+            
+            dispatchGroup.enter()
+            
+            getImage(urlString: urlString) { result in
+                switch result {
+                case .success(let image):
+                    images.append(image)
+                    
+                case .failure(let error):
+                    print(error)
+                }
+                dispatchGroup.leave()
+            }
+        }
+        
+        dispatchGroup.notify(queue: DispatchQueue.main) {
+            completion(images)
+        }
+    }
+    
 }
+    

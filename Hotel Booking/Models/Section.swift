@@ -8,7 +8,7 @@
 import Foundation
 
 struct Section {
-    var courseName: String
-    var lessons: [String]
-    var expanded: Bool
+    var touristName: String
+    var fieldNames: [String]
+    var isExpanded: Bool
 }

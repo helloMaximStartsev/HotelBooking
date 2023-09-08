@@ -10,7 +10,7 @@ import Foundation
 extension Int {
     
     func convertPrice() -> String {
-        "От \(self) ₽"
+        "\(self) ₽"
     }
     
 }

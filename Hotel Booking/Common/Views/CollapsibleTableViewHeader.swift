@@ -37,8 +37,6 @@ class CollapsibleTableViewHeader: UITableViewHeaderFooterView {
     }
     
     func setupSubviews() {
-        layer.borderColor = UIColor.red.cgColor
-        layer.borderWidth = 1
         contentView.addSubview(header)
     }
     

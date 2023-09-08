@@ -11,9 +11,11 @@ import SnapKit
 final class RoomListViewController: UIViewController {
     
     private let viewModel: RoomListViewModel
+    private let hotelName: String
 
     private lazy var tableView: UITableView = {
         let tableView = UITableView()
+        tableView.showsVerticalScrollIndicator = false
         tableView.separatorStyle = .none
         tableView.estimatedRowHeight = UITableView.automaticDimension
         tableView.dataSource = self
@@ -23,8 +25,9 @@ final class RoomListViewController: UIViewController {
     
     // MARK: - Initialization
 
-    init(viewModel: RoomListViewModel) {
+    init(viewModel: RoomListViewModel, hotelName: String) {
         self.viewModel = viewModel
+        self.hotelName = hotelName
         
         super.init(nibName: nil, bundle: nil)
     }
@@ -54,7 +57,7 @@ final class RoomListViewController: UIViewController {
 private extension RoomListViewController {
     
     func setupView() {
-        title = "Отель"
+        title = hotelName
         view.backgroundColor = UIColor(hexString: ColorConstants.lightGrey)
     }
     
@@ -114,9 +117,13 @@ extension RoomListViewController: UITableViewDataSource {
               let cell = tableView.dequeueReusableCell(withIdentifier: RoomTableViewCell.identifier, for: indexPath) as? RoomTableViewCell else {
             return UITableViewCell()
         }
-        
         cell.setCellData(room: rooms[indexPath.row])
         cell.delegate = self
+        
+        viewModel.getRoomImages(urlStrings: rooms[indexPath.row].imageUrls) { images in
+            cell.setRoomImages(images)
+        }
+        
         return cell
     }
     

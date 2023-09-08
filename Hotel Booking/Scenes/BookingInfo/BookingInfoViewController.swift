@@ -18,7 +18,10 @@ final class BookingInfoViewController: UIViewController {
         return scrollView
     }()
     private let contentView = UIView()
-//    private let hotelInfoView = HotelInfoView()
+    private let hotelInfoView = HotelInfoView()
+    private let bookingInfoView = BookingInfoView()
+    private let contactInfoView = ContactInfoView()
+    private let paymentInfoView = PaymentInfoView()
     
     private lazy var tableView: TableViewAdjustedHeight = {
         let tableView = TableViewAdjustedHeight(frame: .zero, style: .grouped)
@@ -29,10 +32,7 @@ final class BookingInfoViewController: UIViewController {
         tableView.separatorStyle = .none
         tableView.sectionFooterHeight = CGFloat.leastNormalMagnitude
         tableView.backgroundColor = .white
-//        tableView.layer.borderColor = UIColor.red.cgColor
-//        tableView.layer.borderWidth = 1
         tableView.layer.cornerRadius = 12
-        tableView.backgroundColor = .white
         return tableView
     }()
     
@@ -46,30 +46,30 @@ final class BookingInfoViewController: UIViewController {
     }()
     
     var sections = [
-        Section(courseName: "Первый турист",
-                lessons: ["Имя",
-                          "Фамилия",
-                          "Дата рождения",
-                          "Гражданство",
-                          "Номер загранпаспорта",
-                          "Срок действия загранпаспорта"],
-                expanded: false),
-//        Section(courseName: "Второй турист",
-//                lessons: ["Имя",
-//                          "Фамилия",
-//                          "Дата рождения",
-//                          "Гражданство",
-//                          "Номер загранпаспорта",
-//                          "Срок действия загранпаспорта"],
-//                expanded: false),
-//        Section(courseName: "Третий турист",
-//                lessons: ["Имя",
-//                          "Фамилия",
-//                          "Дата рождения",
-//                          "Гражданство",
-//                          "Номер загранпаспорта",
-//                          "Срок действия загранпаспорта"],
-//                expanded: false),
+        Section(touristName: "Первый турист",
+                fieldNames: ["Имя",
+                             "Фамилия",
+                             "Дата рождения",
+                             "Гражданство",
+                             "Номер загранпаспорта",
+                             "Срок действия загранпаспорта"],
+                isExpanded: false),
+        Section(touristName: "Второй турист",
+                fieldNames: ["Имя",
+                             "Фамилия",
+                             "Дата рождения",
+                             "Гражданство",
+                             "Номер загранпаспорта",
+                             "Срок действия загранпаспорта"],
+                isExpanded: false),
+        Section(touristName: "Третий турист",
+                fieldNames: ["Имя",
+                             "Фамилия",
+                             "Дата рождения",
+                             "Гражданство",
+                             "Номер загранпаспорта",
+                             "Срок действия загранпаспорта"],
+                isExpanded: false),
     ]
     
     // MARK: - Initialization
@@ -78,6 +78,8 @@ final class BookingInfoViewController: UIViewController {
         self.viewModel = viewModel
         
         super.init(nibName: nil, bundle: nil)
+        
+        bindBookingInfo()
     }
     
     required init?(coder: NSCoder) {
@@ -91,7 +93,6 @@ final class BookingInfoViewController: UIViewController {
         setupSubviews()
         setupLayout()
         configureNavigationBar()
-//        bindBookingInfo()
     }
     
     deinit {
@@ -104,7 +105,7 @@ final class BookingInfoViewController: UIViewController {
 private extension BookingInfoViewController {
     
     func setupView() {
-        title = "Отель"
+        title = "Бронирование"
         view.backgroundColor = UIColor(hexString: ColorConstants.lightGrey)
     }
     
@@ -114,16 +115,14 @@ private extension BookingInfoViewController {
         
         scrollView.addSubview(contentView)
         
-//        contentView.addSubview(hotelInfoView)
+        contentView.addSubview(hotelInfoView)
+        contentView.addSubview(bookingInfoView)
+        contentView.addSubview(contactInfoView)
         contentView.addSubview(tableView)
-//        view.addSubview(tableView)
+        contentView.addSubview(paymentInfoView)
     }
     
     func setupLayout() {
-//        tableView.snp.makeConstraints { make in
-//            make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
-//            make.leading.trailing.equalToSuperview()
-//        }
         scrollView.snp.makeConstraints { make in
             make.top.equalTo(view.safeAreaLayoutGuide.snp.top)
             make.bottom.equalTo(view.snp.bottom)
@@ -132,16 +131,27 @@ private extension BookingInfoViewController {
         contentView.snp.makeConstraints { make in
             make.top.leading.trailing.width.equalToSuperview()
             make.height.equalTo(scrollView.contentLayoutGuide.snp.height)
-                .inset(50)
+                .inset(30)
         }
-//        hotelInfoView.snp.makeConstraints { make in
-//            make.top.equalToSuperview()
-//            make.leading.trailing.equalToSuperview()
-//        }
-        tableView.snp.makeConstraints { make in
-//            make.top.equalTo(hotelInfoView.snp.bottom)
-            make.top.bottom.equalToSuperview()
+        hotelInfoView.snp.makeConstraints { make in
+            make.top.equalToSuperview()
             make.leading.trailing.equalToSuperview()
+        }
+        bookingInfoView.snp.makeConstraints { make in
+            make.top.equalTo(hotelInfoView.snp.bottom).offset(8)
+            make.leading.trailing.equalToSuperview()
+        }
+        contactInfoView.snp.makeConstraints { make in
+            make.top.equalTo(bookingInfoView.snp.bottom).offset(8)
+            make.leading.trailing.equalToSuperview()
+        }
+        tableView.snp.makeConstraints { make in
+            make.top.equalTo(contactInfoView.snp.bottom).offset(8)
+            make.leading.trailing.equalToSuperview()
+        }
+        paymentInfoView.snp.makeConstraints { make in
+            make.top.equalTo(tableView.snp.bottom).offset(8)
+            make.leading.trailing.bottom.equalToSuperview()
         }
         payButton.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(16)
@@ -165,14 +175,16 @@ private extension BookingInfoViewController {
         )
     }
     
-//    func bindBookingInfo() {
-//        viewModel.bookingInfo.bind { [unowned self] bookingInfo in
-//            guard let bookingInfo = bookingInfo else { return }
-//            DispatchQueue.main.async {
-//                self.hotelInfoView.setHotelInfo(bookingInfo)
-//            }
-//        }
-//    }
+    func bindBookingInfo() {
+        viewModel.bookingInfo.bind { [unowned self] bookingInfo in
+            guard let bookingInfo = bookingInfo else { return }
+            DispatchQueue.main.async {
+                self.hotelInfoView.setHotelInfo(bookingInfo)
+                self.bookingInfoView.setBookingInfo(bookingInfo)
+                self.paymentInfoView.setPaymentInfo(bookingInfo)
+            }
+        }
+    }
     
     @objc
     func didTapPayButton() {
@@ -183,6 +195,7 @@ private extension BookingInfoViewController {
     func didTapBackButton() {
         viewModel.didTapBackButton()
     }
+    
 }
 
 // MARK: - UITableViewDataSource
@@ -194,33 +207,36 @@ extension BookingInfoViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        sections[section].lessons.count
+        sections[section].fieldNames.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: InputTableViewCell.identifier, for: indexPath) as? InputTableViewCell else {
             return UITableViewCell()
         }
-        cell.setCellData(text: sections[indexPath.section].lessons[indexPath.row])
+        cell.setCellData(text: sections[indexPath.section].fieldNames[indexPath.row])
         return cell
     }
-    
-
     
 }
 
 // MARK: - CollapsibleTableViewHeaderDelegate
 
 extension BookingInfoViewController: CollapsibleTableViewHeaderDelegate {
+    
     func toggleSection(header: CollapsibleTableViewHeader, section: Int) {
-        sections[section].expanded = !sections[section].expanded
-
+        sections[section].isExpanded.toggle()
         tableView.beginUpdates()
-        for row in 0..<sections[section].lessons.count {
-            tableView.reloadRows(at: [IndexPath(row: row, section: section)], with: .bottom)
+        
+        var indexPathArray = [IndexPath]()
+        for row in 0..<sections[section].fieldNames.count {
+            let indexPath = IndexPath(row: row, section: section)
+            indexPathArray.append(indexPath)
         }
+        tableView.reloadRows(at: indexPathArray, with: .automatic)
         tableView.endUpdates()
     }
+    
 }
 
 // MARK: - UITableViewDelegate
@@ -228,7 +244,7 @@ extension BookingInfoViewController: CollapsibleTableViewHeaderDelegate {
 extension BookingInfoViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        sections[indexPath.section].expanded ? UITableView.automaticDimension : 0
+        sections[indexPath.section].isExpanded ? UITableView.automaticDimension : 0
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -236,7 +252,7 @@ extension BookingInfoViewController: UITableViewDelegate {
             return UITableViewHeaderFooterView()
         }
         
-        headerView.setup(header: sections[section].courseName, section: section, delegate: self)
+        headerView.setup(header: sections[section].touristName, section: section, delegate: self)
         return headerView
     }
     

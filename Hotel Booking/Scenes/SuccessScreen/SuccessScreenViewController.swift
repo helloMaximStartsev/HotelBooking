@@ -11,12 +11,6 @@ import SnapKit
 final class SuccessScreenViewController: UIViewController {
     
     private let viewModel: SuccessScreenViewModel
-//    private let image: UIImageView = {
-//        let image = UIImageView(image: "🎉".image())
-//        image.contentMode = .center
-//        image.layer.cornerRadius = 20
-//        return image
-//    }()
     private let successResult = UILabel.makeLabel(
         text: TextConstants.successResult,
         font: UIFont.boldSystemFont(ofSize: 22),
@@ -30,15 +24,18 @@ final class SuccessScreenViewController: UIViewController {
         numberOfLines: 0,
         textAlignment: .center
     )
-    private let image: UILabel = {
-        let l = UILabel()
-        l.layer.borderColor = UIColor.red.cgColor
-        l.layer.borderWidth = 1
-        l.font = UIFont.systemFont(ofSize: 50)
-        l.text = "🎉"
-        return l
+    private let emojiLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 50)
+        label.text = "🎉"
+        return label
     }()
-    
+    private let greyCircle: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor(hexString: ColorConstants.lightGrey)
+        view.layer.cornerRadius = 50
+        return view
+    }()
     private lazy var superButton: UIButton = {
         let button = UIButton()
         button.backgroundColor = UIColor(hexString: ColorConstants.darkBlue)
@@ -80,15 +77,16 @@ final class SuccessScreenViewController: UIViewController {
 private extension SuccessScreenViewController {
     
     func setupView() {
-        title = "Отель"
-        view.backgroundColor = UIColor(hexString: ColorConstants.lightGrey)
+        title = "Заказ оплачен"
+        view.backgroundColor = .white
     }
     
     func setupSubviews() {
         view.addSubview(successResult)
         view.addSubview(successDescription)
         view.addSubview(superButton)
-        view.addSubview(image)
+        view.addSubview(greyCircle)
+        view.addSubview(emojiLabel)
     }
     
     func setupLayout() {
@@ -96,9 +94,14 @@ private extension SuccessScreenViewController {
             make.leading.trailing.equalToSuperview().inset(25)
             make.centerX.centerY.equalToSuperview()
         }
-        image.snp.makeConstraints { make in
+        emojiLabel.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.bottom.equalTo(successResult.snp.top).inset(32)
+            make.bottom.equalTo(successResult.snp.top).offset(-50)
+        }
+        greyCircle.snp.makeConstraints { make in
+            make.centerX.equalTo(emojiLabel.snp.centerX)
+            make.centerY.equalTo(emojiLabel.snp.centerY)
+            make.width.height.equalTo(100)
         }
         successDescription.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview().inset(25)

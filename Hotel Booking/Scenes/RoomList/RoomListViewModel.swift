@@ -35,6 +35,14 @@ final class RoomListViewModel {
         output?.didTapBackButton()
     }
     
+    func getRoomImages(urlStrings: [String], comletion: @escaping ([UIImage]) -> Void) {
+        networkService.getImages(urlStrings: urlStrings) { images in
+            DispatchQueue.main.async {
+                comletion(images)
+            }
+        }
+    }
+    
     deinit {
         print(#function, NSStringFromClass(RoomListViewModel.self))
     }

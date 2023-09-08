@@ -13,6 +13,6 @@ enum ColorConstants {
     static let darkBlue = "#0D72FF"
     static let lightGrey = "#F6F6F9"
     static let darkGrey = "#828796"
-
+    static let lightBlue = "#0D72FF"
 
 }

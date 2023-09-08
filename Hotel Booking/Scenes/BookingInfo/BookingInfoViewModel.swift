@@ -17,6 +17,11 @@ final class BookingInfoViewModel {
     private let networkService = NetworkService.shared
     private weak var output: BookingInfoViewModelProtocol?
     
+    var isPhoneNumberValid = false
+    var isEmailValid = false
+    var isTuristFormValid = false
+
+    var isFormValid: Observable<Bool> = Observable(value: nil)
     var bookingInfo: Observable<BookingModel> = Observable(value: nil)
     
     // MARK: - Initialization

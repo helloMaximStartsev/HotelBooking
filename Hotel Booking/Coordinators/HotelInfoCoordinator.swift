@@ -39,12 +39,13 @@ final class HotelInfoCoordinator: BaseCoordinator {
 
 extension HotelInfoCoordinator: HotelInfoViewModelOutput {
     
-    func didTapChooseNumbersButton() {
+    func didTapChooseNumbersButton(hotelName: String) {
         guard let parent = parent else { return }
         
         let roomListCoordinator = RoomListCoordinator(
             navigationController: navigationController,
-            parent: parent
+            parent: parent,
+            hotelName: hotelName
         )
         parent.add(coordinator: roomListCoordinator)
         roomListCoordinator.start()

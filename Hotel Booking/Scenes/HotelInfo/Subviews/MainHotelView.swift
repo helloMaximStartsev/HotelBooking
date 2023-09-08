@@ -10,15 +10,12 @@ import SnapKit
 
 final class MainHotelView: UIView {
     
+    private var hotelImages: [UIImage]?
+    private var imageIndex = 0
+    
     // MARK: - UI
     
-    private let imageView: UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: "Hotel"))
-        imageView.contentMode = .scaleAspectFill
-        imageView.layer.cornerRadius = 15
-        imageView.clipsToBounds = true
-        return imageView
-    }()
+    private let carouselView = CarouselView()
     private let ratingView = RatingView()
     private let hotelNameLabel = UILabel.makeLabel(
         font: UIFont.boldSystemFont(ofSize: 22),
@@ -29,7 +26,7 @@ final class MainHotelView: UIView {
         textColor: UIColor(hexString: ColorConstants.darkBlue)
     )
     private let minimalPriceLabel = UILabel.makeLabel(
-        font: UIFont.boldSystemFont(ofSize: 30),
+        font: UIFont.boldSystemFont(ofSize: 27),
         textColor: .black
     )
     private let priceForItLabel = UILabel.makeLabel(
@@ -54,14 +51,15 @@ final class MainHotelView: UIView {
     // MARK: - Public functions
     
     func setHotelInfo(_ hotelInfo: HotelModel) {
-//        if let imageURL = URL(string: hotelInfo.imageUrls[0]) {
-//            imageView.sd_setImage(with: imageURL)
-//        }
         ratingView.setRating(text: "\(hotelInfo.rating) \(hotelInfo.ratingName)")
         hotelNameLabel.text = hotelInfo.name
         hotelAddressLabel.text = hotelInfo.address
-        minimalPriceLabel.text = hotelInfo.minimalPrice.convertPrice()
+        minimalPriceLabel.text = "от \(hotelInfo.minimalPrice.convertPrice())"
         priceForItLabel.text = hotelInfo.priceForIt
+    }
+    
+    func setHotelImages(_ images: [UIImage]) {
+        self.carouselView.configureView(data: images)
     }
     
 }
@@ -77,7 +75,7 @@ private extension MainHotelView {
     }
     
     func setupSubviews() {
-        addSubview(imageView)
+        addSubview(carouselView)
         addSubview(ratingView)
         addSubview(hotelNameLabel)
         addSubview(hotelAddressLabel)
@@ -86,13 +84,13 @@ private extension MainHotelView {
     }
     
     func setupLayout() {
-        imageView.snp.makeConstraints { make in
+        carouselView.snp.makeConstraints { make in
             make.top.equalToSuperview()
             make.leading.trailing.equalToSuperview().inset(16)
             make.height.equalTo(250)
         }
         ratingView.snp.makeConstraints { make in
-            make.top.equalTo(imageView.snp.bottom).offset(16)
+            make.top.equalTo(carouselView.snp.bottom).offset(16)
             make.leading.equalToSuperview().inset(16)
         }
         hotelNameLabel.snp.makeConstraints { make in
@@ -115,4 +113,4 @@ private extension MainHotelView {
     }
     
 }
-
+    

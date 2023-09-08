@@ -11,6 +11,7 @@ import SnapKit
 final class HotelInfoViewController: UIViewController {
     
     private let viewModel: HotelInfoViewModel
+    private var hotelName: String?
 
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
@@ -49,6 +50,7 @@ final class HotelInfoViewController: UIViewController {
         setupLayout()
         configureNavigationBar()
         bindHotelInfo()
+        bindHotelImages()
     }
     
     deinit {
@@ -74,9 +76,6 @@ private extension HotelInfoViewController {
         
         contentView.addSubview(mainHotelView)
         contentView.addSubview(hotelDescriptionView)
-        
-        hotelDescriptionView.layer.borderColor = UIColor.red.cgColor
-        hotelDescriptionView.layer.borderWidth = 3
     }
     
     func setupLayout() {
@@ -87,7 +86,8 @@ private extension HotelInfoViewController {
         }
         contentView.snp.makeConstraints { make in
             make.top.leading.trailing.width.equalToSuperview()
-            make.height.equalTo(scrollView.contentLayoutGuide.snp.height).inset(200)
+            make.height.equalTo(scrollView.contentLayoutGuide.snp.height)
+                .inset(30)
         }
         mainHotelView.snp.makeConstraints { make in
             make.top.equalToSuperview()
@@ -119,13 +119,24 @@ private extension HotelInfoViewController {
             DispatchQueue.main.async {
                 self.mainHotelView.setHotelInfo(hotelInfo)
                 self.hotelDescriptionView.setHotelDescription(hotelInfo.aboutTheHotel)
+                self.hotelName = hotelInfo.name
+            }
+        }
+    }
+    
+    func bindHotelImages() {
+        viewModel.hotelImages.bind { [unowned self] hotelImages in
+            guard let hotelImages = hotelImages else { return }
+
+            DispatchQueue.main.async {
+                self.mainHotelView.setHotelImages(hotelImages)
             }
         }
     }
     
     @objc
     func didTapChooseNumbersButton() {
-        viewModel.didTapChooseNumbersButton()
+        viewModel.didTapChooseNumbersButton(hotelName: hotelName ?? "Unknown hotel")
     }
 
 }

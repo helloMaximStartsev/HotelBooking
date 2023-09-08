@@ -15,15 +15,19 @@ final class RoomListCoordinator: BaseCoordinator {
     
     var navigationController: UINavigationController
     private weak var parent: Coordinator?
+    private let hotelName: String
     
-    init(navigationController: UINavigationController, parent: Coordinator) {
+    init(navigationController: UINavigationController,
+         parent: Coordinator,
+         hotelName: String) {
         self.navigationController = navigationController
         self.parent = parent
+        self.hotelName = hotelName
     }
     
     override func start() {
         let viewModel = RoomListViewModel(output: self)
-        let vc = RoomListViewController(viewModel: viewModel)
+        let vc = RoomListViewController(viewModel: viewModel, hotelName: hotelName)
         navigationController.isNavigationBarHidden = false
         navigationController.pushViewController(vc, animated: true)
     }

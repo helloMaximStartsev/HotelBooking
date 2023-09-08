@@ -9,7 +9,7 @@ import UIKit
 
 
 protocol HotelInfoViewModelOutput: AnyObject {
-    func didTapChooseNumbersButton()
+    func didTapChooseNumbersButton(hotelName: String)
 }
 
 final class HotelInfoViewModel {
@@ -18,6 +18,7 @@ final class HotelInfoViewModel {
     private weak var moduleOutput: HotelInfoViewModelOutput?
     
     var hotelInfo: Observable<HotelModel> = Observable(value: nil)
+    var hotelImages: Observable<[UIImage]> = Observable(value: nil)
     
     // MARK: - Initialization
     
@@ -27,8 +28,8 @@ final class HotelInfoViewModel {
         getHotelInfo()
     }
     
-    func didTapChooseNumbersButton() {
-        moduleOutput?.didTapChooseNumbersButton()
+    func didTapChooseNumbersButton(hotelName: String) {
+        moduleOutput?.didTapChooseNumbersButton(hotelName: hotelName)
     }
     
     deinit {
@@ -46,6 +47,13 @@ private extension HotelInfoViewModel {
 
         networkService.getHotelInfo(urlString: urlString) { [unowned self] hotelInfo in
             self.hotelInfo.value = hotelInfo
+            self.getImages(urlStrings: hotelInfo.imageUrls)
+        }
+    }
+    
+    func getImages(urlStrings: [String]) {
+        networkService.getImages(urlStrings: urlStrings) { [unowned self] images in
+            self.hotelImages.value = images
         }
     }
     

@@ -23,12 +23,11 @@ final class RatingView: UIView {
     
     // MARK: - Initialization
     
-    init() {
+    override init(frame: CGRect) {
         super.init(frame: .zero)
         
         setupView()
         setupSubviews()
-        setRating(text: "5 Превосходно")
     }
     
     required init?(coder: NSCoder) {
@@ -59,7 +58,7 @@ private extension RatingView {
         starImageView.snp.makeConstraints { make in
             make.top.bottom.equalToSuperview().inset(5)
             make.leading.equalToSuperview().inset(10)
-            make.width.height.equalTo(15)
+//            make.width.height.equalTo(15)
         }
         rating.snp.makeConstraints { make in
             make.centerY.equalTo(starImageView)
